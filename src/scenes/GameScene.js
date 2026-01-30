@@ -13,6 +13,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('right_btn', 'assets/right_btn.png');
         this.load.image('fire_btn', 'assets/fire_btn.png');
         this.load.image('bullet', 'assets/bullet.png');
+        this.load.image('enemy', 'assets/plane_enemy.png');
     }
 
     create() {
@@ -57,6 +58,20 @@ export class GameScene extends Phaser.Scene {
         this.bullets = this.physics.add.group({
             defaultKey: 'bullet',
             maxSize: 10
+        });
+
+        // Enemies
+        this.maxEnemies = 6;
+        this.enemies = this.physics.add.group({
+            defaultKey: 'enemy',
+            maxSize: this.maxEnemies
+        });
+
+        this.time.addEvent({
+            delay: 1000,
+            callback: this.spawnEnemy,
+            callbackScope: this,
+            loop: true
         });
 
         // Touch controls
@@ -131,6 +146,12 @@ export class GameScene extends Phaser.Scene {
                 this.bullets.killAndHide(bullet);
             }
         });
+
+        this.enemies.children.iterate((enemy) => {
+            if (enemy.active && enemy.y > this.scale.height + 50) {
+                this.enemies.killAndHide(enemy);
+            }
+        });
     }
 
     fireBullet() {
@@ -148,5 +169,22 @@ export class GameScene extends Phaser.Scene {
     incrementScore() {
         this.score += 1;
         this.scoreText.setText('Score: ' + this.score);
+    }
+
+    spawnEnemy() {
+        if (this.enemies.countActive() >= this.maxEnemies) {
+            return;
+        }
+
+        const x = Phaser.Math.Between(50, this.scale.width - 50);
+        const enemy = this.enemies.get(x, -50);
+
+        if (enemy) {
+            enemy.setActive(true);
+            enemy.setVisible(true);
+            enemy.body.enable = true;
+            enemy.setVelocityY(200);
+            enemy.setScale(0.055); // consistent scaling
+        }
     }
 }
