@@ -1,5 +1,6 @@
 import { GameScene } from './scenes/GameScene.js';
 import { HomeScene } from './scenes/HomeScene.js';
+import { GameOverScene } from './scenes/GameOverScene.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -9,7 +10,7 @@ const config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [HomeScene, GameScene], // Start with HomeScene
+    scene: [HomeScene, GameScene, GameOverScene], // Start with HomeScene
     physics: {
         default: 'arcade',
     }

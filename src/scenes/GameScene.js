@@ -112,7 +112,15 @@ export class GameScene extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(1, 0).setDepth(2);
 
-        this.time.addEvent({
+        // Lives
+        this.lives = 3;
+        this.livesText = this.add.text(width - 20, 60, 'Lives: 3', {
+            fontSize: '32px',
+            fill: '#ff0000',
+            fontStyle: 'bold'
+        }).setOrigin(1, 0).setDepth(2);
+
+        this.scoreTimer = this.time.addEvent({
             delay: 500,
             callback: this.incrementScore,
             callbackScope: this,
@@ -149,7 +157,18 @@ export class GameScene extends Phaser.Scene {
 
         this.enemies.children.iterate((enemy) => {
             if (enemy.active && enemy.y > this.scale.height + 50) {
+                // Enemy passed the player
+                this.lives -= 1;
+                this.livesText.setText('Lives: ' + this.lives);
+
+                // Remove enemy properly
                 this.enemies.killAndHide(enemy);
+                enemy.body.enable = false; // ensure physics is disabled
+
+                if (this.lives <= 0) {
+                    this.scoreTimer.remove(); // Stop scoring
+                    this.scene.start('GameOverScene', { score: this.score });
+                }
             }
         });
     }
