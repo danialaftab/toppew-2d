@@ -53,7 +53,7 @@ export class GameScene extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        
+
         this.bullets = this.physics.add.group({
             defaultKey: 'bullet',
             maxSize: 10
@@ -71,7 +71,7 @@ export class GameScene extends Phaser.Scene {
         leftBtn.setScale(0.5);
         rightBtn.setScale(0.5);
         fireBtn.setScale(0.5);
-        
+
         // Ensure buttons stay on top
         leftBtn.setDepth(1);
         rightBtn.setDepth(1);
@@ -87,6 +87,21 @@ export class GameScene extends Phaser.Scene {
 
         fireBtn.on('pointerdown', () => {
             this.fireBullet();
+        });
+
+        // Score
+        this.score = 0;
+        this.scoreText = this.add.text(width - 20, 20, 'Score: 0', {
+            fontSize: '32px',
+            fill: '#ffffff',
+            fontStyle: 'bold'
+        }).setOrigin(1, 0).setDepth(2);
+
+        this.time.addEvent({
+            delay: 500,
+            callback: this.incrementScore,
+            callbackScope: this,
+            loop: true
         });
     }
 
@@ -128,5 +143,10 @@ export class GameScene extends Phaser.Scene {
             bullet.setVelocityY(-400);
             bullet.setScale(0.025);
         }
+    }
+
+    incrementScore() {
+        this.score += 1;
+        this.scoreText.setText('Score: ' + this.score);
     }
 }
