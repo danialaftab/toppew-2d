@@ -35,9 +35,9 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setVelocityY(typeConfig.velocity);
     }
 
-    takeDamage() {
+    takeDamage(amount = 1) {
         if (this.hp > 0) {
-            this.hp--;
+            this.hp -= amount;
             this.setTint(0xff0000);
             this.scene.time.delayedCall(100, () => {
                 if (this.active) this.clearTint();

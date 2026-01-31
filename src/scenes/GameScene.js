@@ -1,6 +1,7 @@
 
 import { GameConfig } from '../config/GameConfig.js';
 import { Enemy } from '../objects/Enemy.js';
+import { Missile } from '../objects/Missile.js';
 
 export class GameScene extends Phaser.Scene {
     constructor() {
@@ -17,6 +18,8 @@ export class GameScene extends Phaser.Scene {
         this.load.image('right_btn', 'assets/right_btn.png');
         this.load.image('fire_btn', 'assets/fire_btn.png');
         this.load.image('bullet', 'assets/bullet.png');
+        this.load.image('missile_btn', 'assets/missle_lock.png');
+        this.load.image('missile', 'assets/missile.png');
 
         // Enemy Assets
         this.load.spritesheet('enemy', 'assets/plane_enemy.png', {
@@ -128,6 +131,12 @@ export class GameScene extends Phaser.Scene {
             defaultKey: 'bullet',
             maxSize: 10
         });
+
+        this.missiles = this.physics.add.group({
+            classType: Missile,
+            maxSize: 5,
+            runChildUpdate: true
+        });
     }
 
     createInput() {
@@ -143,9 +152,12 @@ export class GameScene extends Phaser.Scene {
         const rightBtn = this.add.image(200, height - 70, 'right_btn').setInteractive();
         const fireBtn = this.add.image(width - 70, height - 70, 'fire_btn').setInteractive();
 
+        const missileBtn = this.add.image(width - 70, height - 150, 'missile_btn').setInteractive();
+
         leftBtn.setScale(0.7).setDepth(1);
         rightBtn.setScale(0.7).setDepth(1);
         fireBtn.setScale(0.15).setDepth(1);
+        missileBtn.setScale(0.1).setDepth(1);
 
         leftBtn.on('pointerdown', () => { this.isLeftMoving = true; });
         leftBtn.on('pointerup', () => { this.isLeftMoving = false; });
@@ -157,6 +169,10 @@ export class GameScene extends Phaser.Scene {
 
         fireBtn.on('pointerdown', () => {
             this.fireBullet();
+        });
+
+        missileBtn.on('pointerdown', () => {
+            this.fireMissile();
         });
     }
 
@@ -184,6 +200,7 @@ export class GameScene extends Phaser.Scene {
 
     createColliders() {
         this.physics.add.overlap(this.bullets, this.enemies, this.hitEnemy, null, this);
+        this.physics.add.overlap(this.missiles, this.enemies, this.hitEnemyWithMissile, null, this);
         this.physics.add.overlap(this.player, this.enemies, this.hitPlayer, null, this);
     }
 
@@ -325,6 +342,39 @@ export class GameScene extends Phaser.Scene {
             player.disableBody(true, true);
 
             this.gameOver();
+        }
+    }
+
+    fireMissile() {
+        if (this.lives <= 0) return;
+
+        // Find closest enemy by Delta Y
+        let closestEnemy = null;
+        let smallestDeltaY = Infinity;
+
+        this.enemies.children.iterate((enemy) => {
+            if (enemy.active) {
+                const deltaY = Math.abs(this.player.y - enemy.y);
+                if (deltaY < smallestDeltaY) {
+                    smallestDeltaY = deltaY;
+                    closestEnemy = enemy;
+                }
+            }
+        });
+
+        if (closestEnemy) {
+            const missile = this.missiles.get(this.player.x, this.player.y);
+            if (missile) {
+                missile.fire(this.player.x, this.player.y, closestEnemy);
+            }
+        }
+    }
+
+    hitEnemyWithMissile(missile, enemy) {
+        missile.disableBody(true, true);
+
+        if (enemy.takeDamage(4)) { // Missiles deal 4 damage
+            enemy.die();
         }
     }
 
