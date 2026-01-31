@@ -13,7 +13,10 @@ export class GameScene extends Phaser.Scene {
         this.load.image('right_btn', 'assets/right_btn.png');
         this.load.image('fire_btn', 'assets/fire_btn.png');
         this.load.image('bullet', 'assets/bullet.png');
-        this.load.image('enemy', 'assets/plane_enemy.png');
+        this.load.spritesheet('enemy', 'assets/plane_enemy.png', {
+            frameWidth: 512,
+            frameHeight: 1024
+        });
         this.load.spritesheet('explosion', 'assets/explosion.png', {
             frameWidth: 256, // 1024 / 4 frames = 256
             frameHeight: 624
@@ -66,6 +69,16 @@ export class GameScene extends Phaser.Scene {
             });
         }
 
+        // Enemy Fly Animation
+        if (!this.anims.exists('fly')) {
+            this.anims.create({
+                key: 'fly',
+                frames: this.anims.generateFrameNumbers('enemy', { start: 0, end: 2 }),
+                frameRate: 10,
+                repeat: -1
+            });
+        }
+
         this.cursors = this.input.keyboard.createCursorKeys();
         this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
@@ -93,8 +106,8 @@ export class GameScene extends Phaser.Scene {
         this.isRightMoving = false;
 
         const leftBtn = this.add.image(70, height - 70, 'left_btn').setInteractive();
-        const rightBtn = this.add.image(width - 70, height - 70, 'right_btn').setInteractive();
-        const fireBtn = this.add.image(width / 2, height - 70, 'fire_btn').setInteractive();
+        const rightBtn = this.add.image(200, height - 70, 'right_btn').setInteractive();
+        const fireBtn = this.add.image(width - 70, height - 70, 'fire_btn').setInteractive();
 
         // Scale buttons
         leftBtn.setScale(0.5);
@@ -220,7 +233,8 @@ export class GameScene extends Phaser.Scene {
             enemy.setVisible(true);
             enemy.body.enable = true;
             enemy.setVelocityY(200);
-            enemy.setScale(0.055); // consistent scaling
+            enemy.setScale(0.15); // consistent scaling
+            enemy.play('fly');
         }
     }
 
