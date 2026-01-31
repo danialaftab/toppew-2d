@@ -17,6 +17,7 @@ export class HomeScene extends Phaser.Scene {
 
         // New Game Button
         const newGameText = this.add.text(width / 2, height / 2 + 80, 'NEW GAME', {
+            fontFamily: '"Lato", sans-serif',
             fontSize: '32px',
             fill: '#00ff00',
             backgroundColor: '#000000'

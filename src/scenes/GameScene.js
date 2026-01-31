@@ -145,7 +145,7 @@ export class GameScene extends Phaser.Scene {
 
         leftBtn.setScale(0.7).setDepth(1);
         rightBtn.setScale(0.7).setDepth(1);
-        fireBtn.setScale(0.7).setDepth(1);
+        fireBtn.setScale(0.15).setDepth(1);
 
         leftBtn.on('pointerdown', () => { this.isLeftMoving = true; });
         leftBtn.on('pointerup', () => { this.isLeftMoving = false; });
@@ -166,6 +166,7 @@ export class GameScene extends Phaser.Scene {
         // Score
         this.score = 0;
         this.scoreText = this.add.text(width - 20, 20, 'Score: 0', {
+            fontFamily: '"Lato", sans-serif',
             fontSize: '32px',
             fill: '#ffffff',
             fontStyle: 'bold'
@@ -174,6 +175,7 @@ export class GameScene extends Phaser.Scene {
         // Lives
         this.lives = 3;
         this.livesText = this.add.text(width - 20, 60, 'Lives: 3', {
+            fontFamily: '"Lato", sans-serif',
             fontSize: '32px',
             fill: '#ff0000',
             fontStyle: 'bold'

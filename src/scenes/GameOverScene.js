@@ -7,30 +7,53 @@ export class GameOverScene extends Phaser.Scene {
         this.score = data.score || 0;
     }
 
+    preload() {
+        this.load.image('avatar', 'assets/avatar.png');
+    }
+
     create() {
         const { width, height } = this.scale;
 
+        // Custom Font Style
+        const fontStyle = {
+            fontFamily: '"Lato", sans-serif',
+            fontSize: '64px',
+            fill: '#ff0000',
+            stroke: '#000000',
+            strokeThickness: 6
+        };
+
         // Game Over Text
-        this.add.text(width / 2, height / 3, 'GAME OVER', {
+        this.add.text(width / 2, height * 0.1, 'GAME OVER', fontStyle).setOrigin(0.5);
+
+        // Avatar
+        const avatar = this.add.image(width / 2, height * 0.48, 'avatar');
+        avatar.setScale(0.4); // Adjust scale as needed based on image size
+
+        // "Nice Try!" Message
+        this.add.text(width / 2, height * 0.73, 'Nice try Ace!', {
+            ...fontStyle,
             fontSize: '48px',
-            fontStyle: 'bold',
-            fill: '#ff0000'
+            fill: '#ffffff',
+            strokeThickness: 4
         }).setOrigin(0.5);
 
         // Score Text
-        this.add.text(width / 2, height / 2, `Final Score: ${this.score}`, {
+        this.add.text(width / 2, height * 0.80, `Score: ${this.score}`, {
+            ...fontStyle,
             fontSize: '32px',
-            fill: '#ffffff'
+            fill: '#ffffff',
+            strokeThickness: 4
         }).setOrigin(0.5);
 
         // Restart Button
-        const restartText = this.add.text(width / 2, height * 0.75, 'RESTART', {
-            fontSize: '32px',
+        const restartText = this.add.text(width / 2, height * 0.9, 'RESTART', {
+            ...fontStyle,
+            fontSize: '48px',
             fill: '#00ff00',
-            backgroundColor: '#000000'
+            strokeThickness: 4
         })
             .setOrigin(0.5)
-            .setPadding(10)
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => {
                 this.scene.start('GameScene');
