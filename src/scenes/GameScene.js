@@ -14,6 +14,10 @@ export class GameScene extends Phaser.Scene {
         this.load.image('fire_btn', 'assets/fire_btn.png');
         this.load.image('bullet', 'assets/bullet.png');
         this.load.image('enemy', 'assets/plane_enemy.png');
+        this.load.spritesheet('explosion', 'assets/explosion.png', {
+            frameWidth: 256, // 1024 / 4 frames = 256
+            frameHeight: 624
+        });
     }
 
     create() {
@@ -49,6 +53,16 @@ export class GameScene extends Phaser.Scene {
                 frames: this.anims.generateFrameNumbers('plane', { start: 0, end: 0 }),
                 frameRate: 10,
                 repeat: -1
+            });
+        }
+
+        // Explosion Animation
+        if (!this.anims.exists('explode')) {
+            this.anims.create({
+                key: 'explode',
+                frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3 }), // 4 frames
+                frameRate: 20,
+                hideOnComplete: true
             });
         }
 
@@ -126,6 +140,9 @@ export class GameScene extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
+
+        // Collision
+        this.physics.add.overlap(this.bullets, this.enemies, this.hitEnemy, null, this);
     }
 
 
@@ -205,5 +222,19 @@ export class GameScene extends Phaser.Scene {
             enemy.setVelocityY(200);
             enemy.setScale(0.055); // consistent scaling
         }
+    }
+
+    hitEnemy(bullet, enemy) {
+        console.log('Hit Enemy!');
+        // Create explosion at enemy position
+        const explosion = this.add.sprite(enemy.x, enemy.y, 'explosion');
+        explosion.setScale(0.5);
+        explosion.play('explode');
+        explosion.on('animationcomplete', () => {
+            explosion.destroy();
+        });
+
+        bullet.destroy();
+        enemy.destroy();
     }
 }

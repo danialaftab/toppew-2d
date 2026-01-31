@@ -3,18 +3,20 @@ export class HomeScene extends Phaser.Scene {
         super({ key: 'HomeScene' });
     }
 
+    preload() {
+        this.load.image('logo', 'assets/logo.png');
+    }
+
     create() {
         const { width, height } = this.scale;
 
-        // Title
-        this.add.text(width / 2, height / 3, 'AERO GAME', {
-            fontSize: '48px',
-            fontStyle: 'bold',
-            fill: '#ffffff'
-        }).setOrigin(0.5);
+        // Logo
+        this.add.image(width / 2, height / 3, 'logo')
+            .setOrigin(0.5)
+            .setScale(0.5); // Adjust scale as needed
 
         // New Game Button
-        const newGameText = this.add.text(width / 2, height / 2, 'NEW GAME', {
+        const newGameText = this.add.text(width / 2, height / 2 + 80, 'NEW GAME', {
             fontSize: '32px',
             fill: '#00ff00',
             backgroundColor: '#000000'
