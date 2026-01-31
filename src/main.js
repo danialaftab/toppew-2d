@@ -13,6 +13,10 @@ const config = {
     scene: [HomeScene, GameScene, GameOverScene], // Start with HomeScene
     physics: {
         default: 'arcade',
+        arcade: {
+            gravity: { y: 0 },
+            debug: true
+        }
     }
 };
 
