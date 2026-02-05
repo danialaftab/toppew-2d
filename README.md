@@ -1,4 +1,4 @@
-# Aero Game
+# TopPew 2D
 
 A classic arcade-style shooter game built with [Phaser 3](https://phaser.io/). This is a weekend project designed to be a fun, lightweight browser game.
 
